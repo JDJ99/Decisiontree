@@ -40,6 +40,12 @@ function trainModel(data) {
 
     // Teken de boomstructuur - DOM element, breedte, hoogte, decision tree
     let json = decisionTree.toJSON()
+    let json2 = decisionTree.stringify()
+    console.log(json)
+    console.log(json2)
+  
+
+
     let visual = new VegaTree('#view', 2300, 1000, json)
 
     // maak een prediction met een sample uit de testdata
@@ -53,7 +59,7 @@ function trainModel(data) {
     // bereken de accuracy met behulp van alle test data
     let correctPredictions = 0
     for (let i = 0; i < testData.length; i++) {
-        if (decisionTree.predict(testData[i]) === testData[i][trainingLabel]) {
+        if (decisionTree.predict(testData[i]) == testData[i][trainingLabel]) {
             correctPredictions++
         }
     }
