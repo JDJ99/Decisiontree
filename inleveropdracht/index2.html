@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script defer src="app2.js" type="module"></script>
+    <title>Diabetes Prediction</title>
+  </head>
+  <body>
+    <h1>Diabetes Prediction</h1>
+
+    <form>
+      <label for="glucose">Glucose:</label>
+      <input type="number" id="glucose" name="glucose" required><br>
+
+      <label for="bmi">BMI:</label>
+      <input type="number" step="0.1" id="bmi" name="bmi" required><br>
+
+      <label for="insulin">Insulin:</label>
+      <input type="number" id="insulin" name="insulin" required><br>
+
+      <label for="bp">Blood Pressure:</label>
+      <input type="number" id="bp" name="bp" required><br>
+
+      <label for="pedigree">Pedigree Function:</label>
+      <input type="number" step="0.001" id="pedigree" name="pedigree" required><br>
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" required><br>
+
+      <label for="skin">Skin Thickness:</label>
+      <input type="number" id="skin" name="skin" required><br>
+
+      <button type="submit">Predict</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script type="module">
+      import { DecisionTree } from "./libraries/decisiontree.js";
+
+      let form = document.querySelector('form');
+      let result = document.querySelector('#result');
+
+      // Load the saved model from JSON file
+      function loadSavedModel() {
+        return fetch("./model.json")
+          .then((response) => response.json())
+          .then((model) => new DecisionTree(model));
+      }
+
+      // Make prediction when the form is submitted
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        // Get user input
+        let glucose = Number(document.querySelector('#glucose').value);
+        let bmi = Number(document.querySelector('#bmi').value);
+        let insulin = Number(document.querySelector('#insulin').value);
+        let bp = Number(document.querySelector('#bp').value);
+        let pedigree = Number(document.querySelector('#pedigree').value);
+        let age = Number(document.querySelector('#age').value);
+        let skin = Number(document.querySelector('#skin').value);
+
+        // Load the saved model and make prediction
+        loadSavedModel().then((decisionTree) => {
+          let sample = { Glucose: glucose, bmi: bmi, Insulin: insulin, Bp: bp, Pedigree: pedigree, Age: age, Skin: skin };
+          let prediction = decisionTree.predict(sample);
+          result.textContent = `The prediction is ${prediction == 1 ? 'diabetes' : 'no diabetes'}.`;
+        });
+      });
+    </script>
+  </body>
+</html>
