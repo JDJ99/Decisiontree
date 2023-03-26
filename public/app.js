@@ -65,6 +65,7 @@ function trainModel(data) {
     }
     let accuracy = correctPredictions / testData.length
     console.log(`Accuracy: ${accuracy}`)
+    document.getElementById("accuracy").innerHTML = "Accuracy: % +accuracy";
 
     // Prediction checks
     if(diabetesPrediction === 0 && diabetes[trainingLabel] === 1) {
